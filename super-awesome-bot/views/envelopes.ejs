@@ -1,0 +1,121 @@
+<html>
+<head>
+<title>
+Envelopes
+</title>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" />
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<style type="text/css">
+.flipped {
+	-moz-transform: scaleX(-1);
+	-o-transform: scaleX(-1);
+	-webkit-transform: scaleX(-1);
+	transform: scaleX(-1);
+	filter: FlipH;
+	-ms-filter: "FlipH";
+}
+</style>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+<script>
+var dragging = false, dragger = null;
+$(function() {
+	var zInd = 1;
+	$(".myDiv").each(function() {
+		var div = $(this);
+		var handle = div.find(".handle");
+		var img = div.find(".myImage");
+		handle.mousedown((function(div) {
+			return function(e) {
+				if(e.which === 3) {
+					dragging = true;
+					dragger = div;
+				}
+			}
+		})(div)).mouseup(function(e) {
+			e.preventDefault();
+		});
+		div.on("DOMMouseScroll mousewheel", (function(t) {
+			return function(e) {
+				e.preventDefault();
+				var opac = parseFloat(t.css("opacity"));
+				if(e.originalEvent.detail) {
+					if(e.originalEvent.detail > 0) {
+						opac -= 0.05;
+					}
+					else {
+						opac += 0.05;
+					}
+				}
+				else if(typeof e.originalEvent.wheelDelta !== undefined) {
+					if(e.originalEvent.wheelDelta < 0) {
+						opac -= 0.05;
+					}
+					else {
+						opac += 0.05;
+					}
+				}
+				if(opac > 1) opac = 1;
+				if(opac <= 0.1) opac = 0.1;
+				t.css("opacity", opac)
+			}
+		})(div)).click(function(e) {
+			$(this).css("zIndex", ++zInd);
+		});
+		img.dblclick(function(e) {
+			$(this).toggleClass("flipped");
+		});
+	});
+	$(document).mouseup(function(e) {
+		e.preventDefault();
+		dragging = false;
+		dragger = null;
+	});
+	$(document).mousemove(function(e) {
+		if (dragging && dragger) {
+			e.preventDefault();
+			var rad = dragger.width()/2;
+			var elOfs = dragger.offset();
+			var elPos = {
+				x: elOfs.left,
+				y: elOfs.top
+			};
+			var mPos = {
+				x: e.pageX-elPos.x,
+				y: e.pageY-elPos.y
+			};
+			var getAtan = Math.atan2(mPos.x-rad, mPos.y-rad);
+			var getDeg = -getAtan/(Math.PI/180) + 135;  //135 = (180deg-45deg)
+
+		
+			dragger.css({transform: 'rotate(' + getDeg + 'deg)'});
+		}
+	});
+	$(".myImage").resizable();
+	$(".myDiv").draggable({
+		appendTo: "body",
+		start: function(e, ui) {
+			isDraggingMedia = true;
+		},
+		stop: function(e, ui) {
+			isDraggingMedia = false;
+		}
+	});
+});
+</script>
+</head>
+<body oncontextmenu="return false;">
+Drag and drop the images with left mouse. Resize with resizer in bottom right. Rotate with rotater in top right (and right mouse button).<br />
+Double click to flip the image. Use your mouse scroll wheel to change its transparency.<br />
+<br />
+Artwork by <a href="http://jettpack.tumblr.com/" target="_blank">Kellan Jett</a> for <a href="http://www.cardsagainsthumanity.com/" target="_blank">Cards Against Humanity</a>.
+<br />
+<%for(var i = 0;i<images.length;i++) {%>
+<div class="myDiv" style="display:inline-block">
+<img class="myImage" style="border: 1px solid black" width=800 height=450 src="<%=images[i]%>" />
+<div class="handle fa fa-rotate-left" style="position: absolute;top: 0; right: 0;">&nbsp;</div>
+</div>
+<br />
+<%}%>
+</body>
+</html>

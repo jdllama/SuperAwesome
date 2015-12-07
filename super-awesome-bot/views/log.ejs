@@ -1,0 +1,19 @@
+<%
+function entities(str) {
+	return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+}
+%>
+<html>
+<head>
+<title>
+IRC Log
+</title>
+</head>
+<body>
+<pre>
+<%for(var i = 0;i<lines.length;i++) {%>
+<%=(lines[i])%>
+<%}%>
+</pre>
+</body>
+</html>

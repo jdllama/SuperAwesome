@@ -1,0 +1,253 @@
+<html>
+<head>
+	<title>
+		Holiday Bullshit - <%=puzzle.channel.split("#").join("");%>
+	</title>
+<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
+<style>
+html, body {
+	height: 100%;
+	width: 100%;
+}
+</style>
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+
+<script src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-9">
+				<div style="height: 5%;width:100%;overflow-y:auto">
+					<ul class="nav nav-tabs" role="tablist">
+						<%
+							for(var i = 0;i<allPuzzles.length;i++) {
+								var p = allPuzzles[i];
+								%>
+								<li role="presentation" <%if(p.channel.split("#").join("") == puzzle.channel.split("#").join("")) {%>class="active"<%}%>><a href="<%=p.channel.split("#").join("");%>"><%=p.channel.split("#").join("");%></a></li>
+								<%
+							}
+						%>
+					</ul>
+				</div>
+				<iframe src="<%=puzzle.sheet;%>" style="height:95%;width:100%;border:0px"></iframe>
+			</div>
+			<div class="col-sm-3" style="height:100%;overflow-y:auto;">
+				<div style="height: 100%;overflow-y:auto;">
+					<div class="panel-group" id="puzzleTools" role="tablist" aria-multiselectable="true">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<%=puzzle.channel.split("#").join("");%>
+								</h4>
+							</div>
+							<div class="panel-body">
+								<p><%=puzzle.description;%></p>
+							</div>
+						</div>
+						<div class="panel panel-default">
+							<div class="panel-heading" role="tab" id="commonLinks">
+								<h4 class="panel-title">
+									<a role="button" data-toggle="collapse" data-parent="puzzleTools" href="#collapseTools" aria-expanded="false" aria-controls="collapseTools">
+										Common Tools
+									</a>
+								</h4>
+							</div>
+							<div id="collapseTools" class="panel-collapse collapse" role="tabpanel" aria-labelledby="commonLinks">
+								<div class="panel-body">
+									<ul class="list-group">
+										<li class="list-group-item"><a href="http://www.doitinhebrew.com/Translate/default.aspx?kb=IL+Hebrew+Phonetic" target="_blank">Hebrew to English</a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<div class="panel panel-default">
+							<div class="panel-heading" role="tab" id="toolOne">
+								<h4 class="panel-title">
+									<a role="button" data-toggle="collapse" data-parent="puzzleTools" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+										Caesar Shift
+									</a>
+								</h4>
+							</div>
+							<div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="toolOne">
+								<div class="panel-body">
+									<form class="form-horizontal" onsubmit="return false;">
+										<div class="form-group">
+											<div class="col-sm-12">
+												<input class="form-control" placeholder="Enter Caesar Shift here" id="caesarshift" />
+											</div>
+										</div>
+										<div class="form-group">
+											<ul id="caesarresults" class="list-group">
+											</ul>
+										</div>
+									</form>
+									<script>
+									(function() {
+										//from http://www.nayuki.io/res/caesar-cipher-javascript.js
+										function crypt(input, key) {
+											var output = "";
+											for (var i = 0; i < input.length; i++) {
+												var c = input.charCodeAt(i);
+												if      (c >= 65 && c <=  90) output += String.fromCharCode((c - 65 + key) % 26 + 65);  // Uppercase
+												else if (c >= 97 && c <= 122) output += String.fromCharCode((c - 97 + key) % 26 + 97);  // Lowercase
+												else                          output += input.charAt(i);  // Copy
+											}
+											return output;
+										}
+										var caesarshift = $("#caesarshift");
+										var caesarresults = $("#caesarresults");
+										caesarshift.keyup(function() {
+											var val = $(this).val().trim();
+											caesarresults.html("");
+											if(val !== "") {
+												for(var i = 0;i<26;i++) {
+													var li = $("<li>");
+													var text = (i + 1) + ": " + crypt(val, i + 1);
+													li.text(text).addClass("list-group-item");
+													caesarresults.append(li);
+												}
+											}
+										});
+									}());
+									</script>
+								</div>
+							</div>
+						</div>
+						<div class="panel panel-default">
+							<div class="panel-heading" role="tab" id="toolThree">
+								<h4 class="panel-title">
+									<a role="button" data-toggle="collapse" data-parent="puzzleTools" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+										Cryptogram Solver
+									</a>
+								</h4>
+							</div>
+							<div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="toolThree">
+								<div class="panel-body">
+									<form action="http://rumkin.com/tools/cipher/cryptogram-solver.php" method="post" target="_blank" class="form-horizontal">
+										<input type="hidden" id="dict" name="dict" value="american-english" />
+										<div class="form-group">
+											<div class="col-sm-12">
+												<input class="form-control" placeholder="Enter Text here" id="text" name="text" />
+											</div>
+										</div>
+										<div class="form-group">
+											<button type="submit">Submit</button>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+						<div class="panel panel-default">
+							<div class="panel-heading" role="tab" id="toolFour">
+								<h4 class="panel-title">
+									<a role="button" data-toggle="collapse" data-parent="puzzleTools" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+										QAT
+									</a>
+								</h4>
+							</div>
+							<div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="toolFour">
+								<div class="panel-body">
+									<form action="http://www.quinapalus.com/cgi-bin/qat" method="get" target="_blank" class="form-horizontal">
+										<input type="hidden" id="dict" name="dict" value="0" />
+										<div class="form-group">
+											<p>Check out their examples <a href="http://www.quinapalus.com/qat.html" target="_blank">here</a>.</p>
+										</div>
+										<div class="form-group">
+											<div class="col-sm-12">
+												<input class="form-control" placeholder="Enter QAT Pattern here" id="pat" name="pat" />
+											</div>
+										</div>
+										<div class="form-group">
+											<button type="submit">Submit</button>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+						<div class="panel panel-default">
+							<div class="panel-heading" role="tab" id="toolTwo">
+								<h4 class="panel-title">
+									<a role="button" data-toggle="collapse" data-parent="puzzleTools" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+										Vigenere
+									</a>
+								</h4>
+							</div>
+							<div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="toolTwo">
+								<div class="panel-body">
+									<form class="form-horizontal" onsubmit="return false;">
+										<div class="form-group">
+											<div class="col-sm-12">
+												<input class="form-control" placeholder="Enter Encrypted text here" id="vigenereText" />
+											</div>
+										</div>
+										<div class="form-group">
+											<div class="col-sm-12">
+												<input class="form-control" placeholder="Enter key here" id="vigenereKey" />
+											</div>
+										</div>
+										<div class="form-group">
+											<p id="vigenereResults">
+											</p>
+										</div>
+									</form>
+									<script>
+									(function() {
+										//code from http://www.triplesix.co.uk/guessvigenere.html
+										var alphabet = "abcdefghijklmnopqrstuvwxyz";
+										var vigenereResults = $("#vigenereResults");
+										var vigenereText = $("#vigenereText");
+										var vigenereKey = $("#vigenereKey");
+										function decrypter() {
+											var result = "";
+
+											if(vigenereText.val().trim() !== "" && vigenereKey.val().trim() !== "") {
+												var input = vigenereText.val().toLowerCase();
+												var key = vigenereKey.val().toLowerCase().replace(/[^a-z]/g, "");
+												vigenereKey.val(key);
+												
+												var keyPos = 0;
+
+												for (var i = 0; i < input.length; i++) {
+													var letter = input.charAt(i);
+													var pos = alphabet.indexOf(letter);
+													if (pos < 0) {
+														result += letter;
+													}
+													else {
+														pos -= alphabet.indexOf(key.charAt(keyPos));
+														pos =  (pos + 26) % 26;
+														result += alphabet.charAt(pos);
+														keyPos++;
+														keyPos %= key.length;
+													}
+												}
+
+											}
+
+											vigenereResults.html(result);
+										}
+										vigenereKey.keyup(decrypter);
+										vigenereText.keyup(decrypter);
+									}());
+									</script>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

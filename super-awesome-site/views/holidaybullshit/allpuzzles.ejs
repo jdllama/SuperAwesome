@@ -1,0 +1,101 @@
+<html>
+<head>
+	<title>
+		Holiday Bullshit - Active Puzzles
+	</title>
+<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
+<style>
+html, body {
+	height: 100%;
+	width: 100%;
+}
+</style>
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+
+<script src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.3.0.js"></script>
+
+<script>
+function ajaxer() {
+	$.ajax({
+		url: "allpuzzles/"
+	}).done(function(data) {
+		var puzzleList = $("#puzzleList");
+		puzzleList.html("");
+
+		var inactiveList = $("#inactiveList");
+		inactiveList.html("");
+
+		data.forEach(function(puzzle) {
+			var li = $("<li>");
+			var a = $("<a>").attr("href", "./puzzles/" + puzzle.channel.split("#").join("")).text(puzzle.channel + " - " + puzzle.description).attr("target", "_blank");
+			li.addClass("list-group-item");
+			li.append(a);
+			if(puzzle.isActive)	puzzleList.append(li);
+			else inactiveList.append(li);
+		});
+	});
+}
+
+$(function() {
+	ajaxer();
+
+	setInterval(ajaxer, 15000);
+})
+</script>
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row" style="height: 97%">
+			<div class="col-sm-2" style="height: 100%;overflow-y:auto;">
+				<div>
+					<h4>Active puzzles</h4>
+					<ul class="list-group" id="puzzleList">
+					</ul>
+				</div>
+
+				<div>
+					<h4>Inactive/completed</h4>
+					<ul class="list-group" id="inactiveList">
+					</ul>
+				</div>
+			</div>
+			<div class="col-sm-8" style="height: 100%">
+				<div style="height:10%">
+					Reddit IRC - irc.snoonet.org - #holidaybullshit
+				</div>
+				<iframe src="https://kiwiirc.com/client/irc.snoonet.org/holidaybullshit" style="height: 90%;width:100%;border:0px"></iframe>
+			</div>
+			<div class="col-sm-2" style="height: 100%">
+				<div>
+
+					<p>Most Important Links</p>
+					<ul class="list-group">
+						<li class="list-group-item"><a herf="https://slack.com/signin" target="_blank">Slack Sign-In</a></li>
+						<li class="list-group-item"><a href="https://www.periscope.tv/dupedad" target="_blank">Dupedad Periscope</a></li>
+						<li class="list-group-item"><a href="http://hanukkah.lol/" target="_blank">Hanukkah LOL</a></li>
+					</ul>
+				</div>
+				<div>
+					This site is not owned by or affiliated with Mystery League, Cards Against Humanity, or Reddit. This is a fan made page to help with the Holiday Bullshit 2015 puzzle.
+				</div>
+			</div>
+		</div>
+		<div class="row" style="height:3%">
+			<div class="col-sm-12">
+				<p class="text-right">
+					<small><%=message;%>. Website and IRC bot by jdlowe dot dev at gmail dot com.</small>
+				</p>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
